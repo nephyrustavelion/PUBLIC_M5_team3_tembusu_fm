@@ -1,0 +1,22 @@
+# Local MySQL 8 for the capstone data. Alternative: install MySQL directly and use
+# MySQL Workbench (Server > Data Import), see the README quick start.
+#
+#   docker compose up -d
+#   docker compose exec -T mysql mysql -uroot -pcapstone < data/sql/<your_dump>.sql
+#   docker compose exec mysql mysql -uroot -pcapstone -e 'SHOW DATABASES;'
+services:
+  mysql:
+    image: mysql:8
+    container_name: capstone-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: capstone
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-pcapstone"]
+      interval: 5s
+      retries: 10
+volumes:
+  mysql_data:
